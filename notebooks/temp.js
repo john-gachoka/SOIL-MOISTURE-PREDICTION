@@ -1,7 +1,61 @@
 // =========================================================================
-// 2b. ERA-5 — TEMPERATURE (T2M, T2M_MAX, T2M_MIN) from DAILY_AGGR
-// Needed for Hargreaves PET in Python. DAILY_AGGR is used because
-// MONTHLY_AGGR does not expose Tmax/Tmin.
+// ERA-5 — TEMPERATURE (T2M, T2M_MAX, T2M_MIN) from DAILY_AGGR
+// Runs from 1995 to 2025. Saves in the same 'Soil_Moisture' folder.
+// Naming : <Variable>_<Season>_<Year>   e.g. T2M_JF_2016
+// CRS    : EPSG:21037 (Arc 1960 / UTM zone 37N)
+// Nodata : -9999.0 (float32)
+// Rule   : If a season has ZERO source scenes, NO file is exported.
+// =========================================================================
+
+// ------------------------------ CONFIG -----------------------------------
+var startYear = 1995; 
+var endYear   = 2025;
+var FOLDER    = 'Soil_Moisture'; // Kept exact same folder
+var NODATA    = -9999;
+
+var CRS = 'EPSG:21037';
+var ERA5_SCALE = 11000;
+var COARSE_BUFFER_M = 15000;
+
+var aoiGeom      = aoi.geometry();
+var coarseRegion = aoiGeom.buffer(COARSE_BUFFER_M).bounds();
+
+var SEASONS = {
+  JF:   {m0: 1,  n: 2},
+  MAM:  {m0: 3,  n: 3},
+  JJAS: {m0: 6,  n: 4},
+  OND:  {m0: 10, n: 3}
+};
+var SEASON_KEYS = ['JF', 'MAM', 'JJAS', 'OND'];
+
+// ------------------------------ HELPERS ----------------------------------
+function windowOf(y, s) {
+  var start = ee.Date.fromYMD(y, s.m0, 1);
+  return {start: start, end: start.advance(s.n, 'month')};
+}
+
+function finalize(img, clipTo) {
+  var out = clipTo ? img.clip(clipTo) : img;
+  return out.toFloat().unmask(ee.Image.constant(NODATA).toFloat());
+}
+
+function exportImage(image, name, region, gridOpts) {
+  var params = {
+    image: image,
+    description: name,
+    folder: FOLDER,
+    fileNamePrefix: name,
+    region: region,
+    maxPixels: 1e13,
+    fileFormat: 'GeoTIFF',
+    formatOptions: {cloudOptimized: true, noData: NODATA}
+  };
+  for (var k in gridOpts) { params[k] = gridOpts[k]; }
+  Export.image.toDrive(params);
+}
+
+// =========================================================================
+// DATA HANDLING
 // =========================================================================
 var eraDaily = ee.ImageCollection('ECMWF/ERA5_LAND/DAILY_AGGR');
 
@@ -24,7 +78,9 @@ function era5TempSeason(y, s) {
   return toC(meanK).addBands(toC(maxK)).addBands(toC(minK));
 }
 
-// Reuse the same counting mechanism as ERA5 soil moisture
+// =========================================================================
+// PIPELINE EXECUTION
+// =========================================================================
 SEASON_KEYS.forEach(function(sk) {
   for (var y = startYear; y <= endYear; y++) {
     var w = windowOf(y, SEASONS[sk]);
@@ -41,8 +97,10 @@ SEASON_KEYS.forEach(function(sk) {
         img.select(v).rename(v),
         v + '_' + sk + '_' + y,
         coarseRegion,
-        {crs: CRS, scale: 11000}
+        {crs: CRS, scale: ERA5_SCALE}
       );
     });
   }
 });
+
+print('Done. Check Tasks tab for ERA5 daily temperature exports.');
