@@ -1,8 +1,11 @@
 # Integrated Assessment of Subsurface Soil Moisture Response to Forest Density and Climate Elasticity
 
 **Case study:** Mount Kenya Forest Ecosystem
+
 **Author:** Gachoka John 
+
 **Institution:** Institute of Geomatics, GIS and Remote Sensing
+
 **Scope:** 1995–2025
 
 ---
