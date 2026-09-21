@@ -1,0 +1,26 @@
+# Core geospatial
+numpy
+pandas
+xarray
+rioxarray
+rasterio
+netCDF4
+dask[complete]
+pyproj
+shapely
+geopandas
+
+# Analysis & stats
+scipy
+statsmodels
+pymannkendall
+scikit-learn
+
+# Plotting
+matplotlib
+cartopy
+
+# Notebook
+jupyterlab
+ipykernel
+tqdm
