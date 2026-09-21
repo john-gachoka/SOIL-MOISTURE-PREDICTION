@@ -1,0 +1,20 @@
+# ---------------- Module setup ----------------
+module purge
+module load applications/eng/gpu/python/conda-26.1.0-python-3.12-vLLM
+source /scratch/lustre/apps/eng/gpu/miniconda3/etc/profile.d/conda.sh
+
+# ---------------- Redirect caches to scratch ----------------
+mkdir -p /scratch/lustre/users/$USER/.cache/pip
+mkdir -p /scratch/lustre/users/$USER/.tmp
+export PIP_CACHE_DIR=/scratch/lustre/users/$USER/.cache/pip
+export TMPDIR=/scratch/lustre/users/$USER/.tmp
+
+# Make permanent (idempotent — safe to append twice)
+grep -q "PIP_CACHE_DIR" ~/.bashrc || \
+  echo 'export PIP_CACHE_DIR=/scratch/lustre/users/$USER/.cache/pip' >> ~/.bashrc
+grep -q "TMPDIR" ~/.bashrc || \
+  echo 'export TMPDIR=/scratch/lustre/users/$USER/.tmp' >> ~/.bashrc
+
+# ---------------- Create the env ----------------
+conda create --prefix /scratch/lustre/users/$USER/envs/mkfe_env python=3.10 -y
+conda activate /scratch/lustre/users/$USER/envs/mkfe_env
