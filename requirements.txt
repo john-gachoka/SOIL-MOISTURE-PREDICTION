@@ -5,6 +5,7 @@ xarray
 rioxarray
 rasterio
 netCDF4
+numba
 dask[complete]
 pyproj
 shapely
