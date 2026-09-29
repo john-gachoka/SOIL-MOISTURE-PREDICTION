@@ -1,0 +1,28 @@
+# Data — never commit
+data/
+models/*.joblib
+models/*.pkl
+outputs/
+
+# Notebook artifacts
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Conda / venv
+envs/
+venv/
+.conda/
+
+# Logs
+notebooks/logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
