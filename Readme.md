@@ -4,9 +4,9 @@
 
 **Author:** Gachoka John 
 
-**Institution:** Institute of Geomatics, GIS and Remote Sensing
+**Institution:** Institute of Geomatics, GIS and Remote Sensing (DeKUT-IGGReS)
 
-**Scope:** 1995–2025
+**Temporal Scope:** 1995–2025
 
 ---
 
@@ -77,6 +77,39 @@ thin seasons can be filtered downstream.
 
 ---
 
+## Folder Structure
+
+```
+\ls-temporal-gap-filling
+├── .gitignore
+├── README.md
+├── requirements.txt
+│
+├── data/                             
+│
+├── notebooks/                          
+│   ├── 01_preprocessing.ipynb
+│   ├── 02_derived_products.ipynb
+│   ├── 03_trends_mann_kendall.ipynb
+│   ├── download.js
+│   ├── env setup
+│   ├── forest_mask.js
+│   └── temp.js
+└── src/                               
+    ├── config.py
+    ├── features.py
+    ├── io.py
+    ├── models.py
+    ├── plots.py
+    └───configs
+          ├──  hindcast.yaml
+          ├──  rf_baseline.yaml
+          └──  xgb_tuned.yaml                 
+
+```
+
+---
+
 ## Methodology
 
 ### 1. Data acquisition (GEE)
@@ -123,7 +156,7 @@ All exports are float32 with nodata `-9999`, in EPSG:21037, COG-compressed.
 - **Granger causality:** on zonal seasonal series, testing whether forest
   density Granger-causes soil moisture, and vice versa.
 
-### 5. Machine learning (Notebook 04 — planned)
+### 5. Machine learning (src/)
 
 - **Target:** SMAP L4 root-zone soil moisture (2015–2025).
 - **Predictors:** NDVI, LST, FVC, forest density, PET, SPEI (3/6/12),
