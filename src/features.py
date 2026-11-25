@@ -374,8 +374,7 @@ def report_coverage(df: pd.DataFrame,
 def build_feature_table(features: Optional[Sequence[str]] = None,
                         stride: int = 1,
                         write_coverage: bool = True,
-                        coverage_tag: str = '')
-                        -> Tuple[pd.DataFrame, xr.Dataset]:
+                        coverage_tag: str = '') -> Tuple[pd.DataFrame, xr.Dataset]:
     """
     Build the tidy training table.
 
